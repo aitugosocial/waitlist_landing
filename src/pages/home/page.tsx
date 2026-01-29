@@ -214,7 +214,7 @@ export default function HomePage() {
             </div>
 
             {/* Video Section */}
-            <div className="mt-16 w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group">
+            <div className="mt-16 w-full max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group">
               <video
                 src="/Lavoo Waitlist Video Main.mp4"
                 controls
