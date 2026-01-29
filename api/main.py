@@ -642,33 +642,33 @@ async def shutdown_event():
 # ============================================
 # API ENDPOINTS
 # ============================================
-# @app.get("/", response_model=HealthCheckResponse)
-# async def root():
-#     """
-#     Root endpoint - Health check
+@app.get("/", response_model=HealthCheckResponse)
+async def root():
+    """
+    Root endpoint - Health check
     
-#     Returns basic system status and connectivity information
-#     """
-#     logger.debug("Health check requested")
+    Returns basic system status and connectivity information
+    """
+    logger.debug("Health check requested")
     
-#     # Test database connection
-#     db_status = "healthy"
-#     try:
-#         DatabaseService.get_waitlist_count()
-#     except Exception:
-#         db_status = "unhealthy"
+    # Test database connection
+    db_status = "healthy"
+    try:
+        DatabaseService.get_waitlist_count()
+    except Exception:
+        db_status = "unhealthy"
     
-#     # Test Brevo connection
-#     brevo_status = brevo_service.test_connection()
-#     brevo_health = "healthy" if brevo_status.get("connected") else "unhealthy"
+    # Test Brevo connection
+    brevo_status = brevo_service.test_connection()
+    brevo_health = "healthy" if brevo_status.get("connected") else "unhealthy"
     
-#     return HealthCheckResponse(
-#         status="operational",
-#         timestamp=datetime.now().isoformat(),
-#         database=db_status,
-#         brevo=brevo_health,
-#         version="1.0.0"
-#     )
+    return HealthCheckResponse(
+        status="operational",
+        timestamp=datetime.now().isoformat(),
+        database=db_status,
+        brevo=brevo_health,
+        version="1.0.0"
+    )
 
 @app.get("/api/health")
 async def health_check():
