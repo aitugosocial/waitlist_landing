@@ -6,7 +6,7 @@ export default function HomePage() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waitlistCount, setWaitlistCount] = useState(2861);
+  const [waitlistCount, setWaitlistCount] = useState(503);
   const [spotsLeft, setSpotsLeft] = useState(153);
   const [isVisible, setIsVisible] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
