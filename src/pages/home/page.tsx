@@ -170,6 +170,18 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Video Section - Moved Above Form */}
+          <div className={`mb-12 w-full max-w-xl md:max-w-[85%] mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group z-20 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <video
+              src="/Lavoo Waitlist Video Main.mp4"
+              controls
+              className="w-full h-full object-cover"
+              poster="/Lavoo Official Logo.png"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
           {/* CTA Form with Enhanced Design */}
           <div className="max-w-xl mx-auto animate-fade-in-up animation-delay-1200">
             {!isSubmitted ? (
@@ -271,17 +283,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Video Section - Full Width */}
-        <div className={`mt-12 w-full max-w-[65%] mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group z-20 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <video
-            src="/Lavoo Waitlist Video Main.mp4"
-            controls
-            className="w-full h-full object-cover"
-            poster="/Lavoo Official Logo.png"
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
+
       </section>
 
       {/* Problem Section with Visual Impact */}
