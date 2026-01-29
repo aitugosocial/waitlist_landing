@@ -1,20 +1,9 @@
-# Nixpacks Configuration for Polyglot (Python + Node.js) App
 
-# Setup phase: Install Python and Node.js runtimes
 [phases.setup]
-nixPkgs = ["python3", "nodejs"]
+nixPkgs = ['nodejs']
 
-# Install phase: Install dependencies for both backend and frontend
-[phases.install]
-cmds = [
-    "pip install -r requirements.txt",
-    "npm install"
-]
+[providers]
+providers = ['node']
 
-# Build phase: Build the React frontend
 [phases.build]
-cmds = ["npm run build"]
-
-# Start phase: Run the FastAPI server
-[start]
-cmd = "uvicorn api.main:app --host 0.0.0.0 --port $PORT"
+cmds = ['npm install --frozen-lockfile', 'npm run build']
