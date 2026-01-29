@@ -71,13 +71,13 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-black font-inter overflow-x-hidden">
       {/* Floating Urgency Bar */}
       <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-orange-600 to-orange-500 text-white py-2 px-4 text-center z-50 shadow-lg">
-        <div className="flex items-center justify-center gap-4 text-sm font-medium">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
           <span className="flex items-center gap-2">
             <i className="ri-fire-fill animate-pulse"></i>
             <strong>{spotsLeft}</strong> spots left in this wave
           </span>
-          <span className="hidden sm:inline">•</span>
-          <span className="hidden sm:inline">
+          <span className="hidden xs:inline">•</span>
+          <span>
             {waitlistCount !== null ? (
               `${waitlistCount.toLocaleString()} builders already joined`
             ) : (
