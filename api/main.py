@@ -642,33 +642,35 @@ async def shutdown_event():
 # ============================================
 # API ENDPOINTS
 # ============================================
-@app.get("/", response_model=HealthCheckResponse)
-async def root():
-    """
-    Root endpoint - Health check
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# ... (other code)
+
+# Mount static assets (JS/CSS/Images)
+# We check if directory exists to avoid startup errors in dev/CI if build is missing
+if os.path.exists("out/assets"):
+    app.mount("/assets", StaticFiles(directory="out/assets"), name="assets")
+
+# Serve React App for Root and Catch-All (SPA Support)
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """Serve the React frontend"""
     
-    Returns basic system status and connectivity information
-    """
-    logger.debug("Health check requested")
-    
-    # Test database connection
-    db_status = "healthy"
-    try:
-        DatabaseService.get_waitlist_count()
-    except Exception:
-        db_status = "unhealthy"
-    
-    # Test Brevo connection
-    brevo_status = brevo_service.test_connection()
-    brevo_health = "healthy" if brevo_status.get("connected") else "unhealthy"
-    
-    return HealthCheckResponse(
-        status="operational",
-        timestamp=datetime.now().isoformat(),
-        database=db_status,
-        brevo=brevo_health,
-        version="1.0.0"
-    )
+    # Allow API routes to pass through (though they are matched first)
+    if full_path.startswith("api"):
+        raise HTTPException(status_code=404, detail="API route not found")
+        
+    # Check if a specific file exists in 'out' (e.g. favicon.ico, logo.png)
+    file_path = os.path.join("out", full_path)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+        
+    # Default: Serve index.html for any other route (Client-side routing)
+    if os.path.exists("out/index.html"):
+        return FileResponse("out/index.html")
+        
+    return {"message": "Frontend not built. Run 'npm run build'"}
 
 @app.get("/api/health")
 async def health_check():
