@@ -672,6 +672,9 @@ async def serve_frontend(full_path: str):
     
     # DEBUG: List current directory to debug Railway deployment
     current_dir = os.getcwd()
+    files = "not_read"
+    out_files = "not_read"
+    
     try:
         files = os.listdir(current_dir)
         out_files = os.listdir("out") if os.path.exists("out") else "out_dir_not_found"
@@ -679,12 +682,12 @@ async def serve_frontend(full_path: str):
         files = str(e)
         out_files = "error_reading_out"
         
-    logger.error(f"Frontend not found. CWD: {current_dir}")
-    logger.error(f"Root files: {files}")
-    logger.error(f"Out files: {out_files}")
+    # logger.error(f"Frontend not found. CWD: {current_dir}")
+    # logger.error(f"Root files: {files}")
+    # logger.error(f"Out files: {out_files}")
         
     return {
-        "message": "Frontend not built. Run 'npm run build'",
+        "message": "Frontend not built. Run 'npm run build' or check logs.",
         "cwd": current_dir,
         "files": str(files),
         "out_status": str(out_files)
