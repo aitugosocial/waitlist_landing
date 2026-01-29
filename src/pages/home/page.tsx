@@ -104,7 +104,7 @@ export default function HomePage() {
 
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
@@ -239,17 +239,7 @@ export default function HomePage() {
               </span>
             </div>
 
-            {/* Video Section */}
-            <div className="mt-16 w-full max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group">
-              <video
-                src="/Lavoo Waitlist Video Main.mp4"
-                controls
-                className="w-full h-full object-cover"
-                poster="/Lavoo Official Logo.png"
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
+
 
             {/* Social Proof
             <div className="mt-8 flex items-center justify-center gap-3">
@@ -279,6 +269,18 @@ export default function HomePage() {
               </div>
             </div> */}
           </div>
+        </div>
+
+        {/* Video Section - Full Width */}
+        <div className={`mt-12 w-full max-w-[65%] mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group z-20 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <video
+            src="/Lavoo Waitlist Video Main.mp4"
+            controls
+            className="w-full h-full object-cover"
+            poster="/Lavoo Official Logo.png"
+          >
+            Your browser does not support the video tag.
+          </video>
         </div>
       </section>
 
