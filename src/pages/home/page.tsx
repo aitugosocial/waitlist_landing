@@ -104,7 +104,7 @@ export default function HomePage() {
 
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 pb-24">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
@@ -174,9 +174,11 @@ export default function HomePage() {
           <div className={`mb-12 w-full max-w-xl md:max-w-[85%] mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-orange-100 bg-black aspect-video flex items-center justify-center relative group z-20 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <video
               src="/Lavoo Waitlist Video Main.mp4"
+              autoPlay
+              muted
+              playsInline
               controls
               className="w-full h-full object-cover"
-              poster="/Lavoo Official Logo.png"
             >
               Your browser does not support the video tag.
             </video>
@@ -239,7 +241,7 @@ export default function HomePage() {
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6 text-sm text-gray-600">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 mb-16 text-sm text-gray-600">
               <span className="flex items-center gap-1 font-medium">
                 <i className="ri-vip-crown-line text-orange-500"></i>
                 Early access • Limited invites
