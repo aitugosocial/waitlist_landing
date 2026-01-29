@@ -75,10 +75,10 @@ class Config:
     """Application configuration with validation"""
     
     # Database
-    DATABASE_URL: str = os.getenv("VITE_DATABASE_URL")
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
     
     # Brevo Configuration
-    BREVO_API_KEY: str = os.getenv("BREVO_API_KEY")
+    BREVO_API_KEY: str = os.getenv("BREVO_API_KEY", "").strip().strip('"').strip("'")
     BREVO_WAITLIST_ID: int = int(os.getenv("BREVO_WAITLIST_ID", "0"))
     
     # CORS Origins
@@ -592,6 +592,7 @@ async def startup_event():
     if Config.BREVO_API_KEY:
         masked = f"{Config.BREVO_API_KEY[:5]}...{Config.BREVO_API_KEY[-5:]}" if len(Config.BREVO_API_KEY) > 10 else "***"
         logger.info(f"🔑 Loaded Brevo Key: {masked} (Len: {len(Config.BREVO_API_KEY)})")
+        logger.debug(f"   Key start/end: {repr(Config.BREVO_API_KEY[:2])}...{repr(Config.BREVO_API_KEY[-2:])}")
     else:
         logger.error("❌ BREVO_API_KEY is missing from environment")
     
@@ -602,7 +603,8 @@ async def startup_event():
         logger.error("❌ Configuration validation failed:")
         for error in config_status["errors"]:
             logger.error(f"   - {error}")
-        logger.error("⚠️ Application may not function correctly!")
+        logger.error("⚠️ Application startup aborted due to configuration errors!")
+        raise RuntimeError("Configuration validation failed")
     else:
         logger.info("✅ Configuration validated successfully")
     
@@ -640,33 +642,33 @@ async def shutdown_event():
 # ============================================
 # API ENDPOINTS
 # ============================================
-@app.get("/", response_model=HealthCheckResponse)
-async def root():
-    """
-    Root endpoint - Health check
+# @app.get("/", response_model=HealthCheckResponse)
+# async def root():
+#     """
+#     Root endpoint - Health check
     
-    Returns basic system status and connectivity information
-    """
-    logger.debug("Health check requested")
+#     Returns basic system status and connectivity information
+#     """
+#     logger.debug("Health check requested")
     
-    # Test database connection
-    db_status = "healthy"
-    try:
-        DatabaseService.get_waitlist_count()
-    except Exception:
-        db_status = "unhealthy"
+#     # Test database connection
+#     db_status = "healthy"
+#     try:
+#         DatabaseService.get_waitlist_count()
+#     except Exception:
+#         db_status = "unhealthy"
     
-    # Test Brevo connection
-    brevo_status = brevo_service.test_connection()
-    brevo_health = "healthy" if brevo_status.get("connected") else "unhealthy"
+#     # Test Brevo connection
+#     brevo_status = brevo_service.test_connection()
+#     brevo_health = "healthy" if brevo_status.get("connected") else "unhealthy"
     
-    return HealthCheckResponse(
-        status="operational",
-        timestamp=datetime.now().isoformat(),
-        database=db_status,
-        brevo=brevo_health,
-        version="1.0.0"
-    )
+#     return HealthCheckResponse(
+#         status="operational",
+#         timestamp=datetime.now().isoformat(),
+#         database=db_status,
+#         brevo=brevo_health,
+#         version="1.0.0"
+#     )
 
 @app.get("/api/health")
 async def health_check():
