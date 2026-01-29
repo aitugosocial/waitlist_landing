@@ -6,7 +6,7 @@ export default function HomePage() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waitlistCount, setWaitlistCount] = useState(503);
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null); // Start as null to show loading
   const [spotsLeft, setSpotsLeft] = useState(153);
   const [isVisible, setIsVisible] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -17,13 +17,17 @@ export default function HomePage() {
 
     // Initial fetch
     const fetchCount = async () => {
-      const result = await getWaitlistCount();
-      if (result.success) {
-        // Base count of 503 plus actual database entries
-        setWaitlistCount(503 + result.count);
-      } else {
-        // Fallback: keep previous or defaults
-        setWaitlistCount(prev => Math.max(503, prev));
+      try {
+        const result = await getWaitlistCount();
+        if (result.success) {
+          // Base count of 503 plus actual database entries
+          setWaitlistCount(503 + result.count);
+        } else {
+          // Fallback if API fails
+          setWaitlistCount(503);
+        }
+      } catch (e) {
+        setWaitlistCount(503);
       }
     };
 
@@ -49,7 +53,7 @@ export default function HomePage() {
       if (result.success) {
         setIsSubmitted(true);
         setEmail('');
-        setWaitlistCount(prev => prev + 1);
+        setWaitlistCount(prev => (prev || 503) + 1);
         setSpotsLeft(prev => Math.max(0, prev - 1));
         setToast({ message: '🎉 You\'ve been added to the waitlist!', type: 'success' });
       } else {
@@ -73,9 +77,31 @@ export default function HomePage() {
             <strong>{spotsLeft}</strong> spots left in this wave
           </span>
           <span className="hidden sm:inline">•</span>
-          <span className="hidden sm:inline">{waitlistCount.toLocaleString()} builders already joined</span>
+          <span className="hidden sm:inline">
+            {waitlistCount !== null ? (
+              `${waitlistCount.toLocaleString()} builders already joined`
+            ) : (
+              <span className="animate-pulse">Loading count...</span>
+            )}
+          </span>
         </div>
       </div>
+
+      {/* Rest of the component... */}
+      {/* Search specifically for the next usage of waitlistCount which is in the Hero or later? No, I need to check where else it is used. */}
+      {/* It is used in the CTA success message "You're #${waitlistCount.toLocaleString()} on the list" */}
+      {/* And in the Hero "2,861 builders already joined" replacement? No, let's look at the file content again. */}
+      {/* Line 76: <span className="hidden sm:inline">{waitlistCount.toLocaleString()} builders already joined</span> */}
+      {/* Wait, the ReplaceFileContent input above replaces the start of the function up to the Sticky Bar rendering. */}
+      {/* I need to make sure I caught all usages or allow the rest to work. */}
+      {/* The 'lines 5-78' cover the state init and the Sticky Bar. */}
+      {/* But wait, waitlistCount is used later in lines 193 and 547 (Success messages). */}
+      {/* I need to handle 'null' there too or TS will complain/runtime crash. */}
+      {/* So I should probably provide a valid fallback in the render or handle null everywhere. */}
+      {/* Simpler: Initialize to null, but in the success message rendering, we only show success if isSubmitted is true. */}
+      {/* If isSubmitted is true, waitlistCount SHOULD be set (because we successfully submitted). */}
+      {/* However, the "Join {waitlistCount}+ builders" text at line 501 needs handling. */}
+
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
@@ -190,7 +216,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-left">
                     <span className="text-2xl font-bold block">You're in!</span>
-                    <span className="text-green-700 text-sm">Position #{waitlistCount.toLocaleString()}</span>
+                    <span className="text-green-700 text-sm">Position #{waitlistCount?.toLocaleString() || '...'}</span>
                   </div>
                 </div>
                 <p className="text-gray-700 text-lg">We'll send your invite when the next wave opens.</p>
@@ -498,7 +524,7 @@ export default function HomePage() {
             <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">progress feels random</span>
           </h2>
           <p className="text-3xl md:text-4xl font-semibold text-gray-700 mb-4">you already know something is missing.</p>
-          <p className="text-xl text-gray-600 mb-12">Join {waitlistCount.toLocaleString()}+ builders who want clarity, not noise.</p>
+          <p className="text-xl text-gray-600 mb-12">Join {waitlistCount?.toLocaleString() || '...'}+ builders who want clarity, not noise.</p>
 
           <div className="max-w-xl mx-auto">
             {!isSubmitted ? (
@@ -544,7 +570,7 @@ export default function HomePage() {
                     <i className="ri-check-line text-5xl text-white font-bold"></i>
                   </div>
                   <span className="text-4xl font-black block mb-2">Welcome aboard!</span>
-                  <span className="text-green-700 text-xl font-semibold">You're #${waitlistCount.toLocaleString()} on the list</span>
+                  <span className="text-green-700 text-xl font-semibold">You're #{waitlistCount?.toLocaleString() || '...'} on the list</span>
                 </div>
                 <p className="text-gray-700 text-xl mb-4">We'll send your invite when Wave 3 opens.</p>
                 <div className="flex flex-col gap-3 mt-6">
