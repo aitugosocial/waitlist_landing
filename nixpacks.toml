@@ -1,9 +1,12 @@
 
-[phases.setup]
-nixPkgs = ['nodejs']
-
 [providers]
-providers = ['node']
+providers = ["node"]
+
+[phases.setup]
+nixPkgs = ["...", "nodejs"]
+
+[phases.install]
+cmds = ["npm ci --frozen-lockfile"]
 
 [phases.build]
-cmds = ['npm install --frozen-lockfile', 'npm run build']
+cmds = ["npm run build"]
