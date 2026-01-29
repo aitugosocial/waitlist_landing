@@ -653,45 +653,7 @@ if os.path.exists("out/assets"):
     app.mount("/assets", StaticFiles(directory="out/assets"), name="assets")
 
 # Serve React App for Root and Catch-All (SPA Support)
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    """Serve the React frontend"""
-    
-    # Allow API routes to pass through (though they are matched first)
-    if full_path.startswith("api"):
-        raise HTTPException(status_code=404, detail="API route not found")
-        
-    # Check if a specific file exists in 'out' (e.g. favicon.ico, logo.png)
-    file_path = os.path.join("out", full_path)
-    if os.path.exists(file_path) and os.path.isfile(file_path):
-        return FileResponse(file_path)
-        
-    # Default: Serve index.html for any other route (Client-side routing)
-    if os.path.exists("out/index.html"):
-        return FileResponse("out/index.html")
-    
-    # DEBUG: List current directory to debug Railway deployment
-    current_dir = os.getcwd()
-    files = "not_read"
-    out_files = "not_read"
-    
-    try:
-        files = os.listdir(current_dir)
-        out_files = os.listdir("out") if os.path.exists("out") else "out_dir_not_found"
-    except Exception as e:
-        files = str(e)
-        out_files = "error_reading_out"
-        
-    # logger.error(f"Frontend not found. CWD: {current_dir}")
-    # logger.error(f"Root files: {files}")
-    # logger.error(f"Out files: {out_files}")
-        
-    return {
-        "message": "Frontend not built. Run 'npm run build' or check logs.",
-        "cwd": current_dir,
-        "files": str(files),
-        "out_status": str(out_files)
-    }
+
 
 @app.get("/api/health")
 async def health_check():
@@ -895,3 +857,44 @@ if __name__ == "__main__":
         log_level="info",
         access_log=True
     )
+
+# ============================================
+# FRONTEND SERVING (Catch-All)
+# ============================================
+# NOTE: This must be defined AFTER all API routes!
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """Serve the React frontend"""
+    
+    # If we got here with an API route, it means it wasn't matched above -> 404
+    if full_path.startswith("api"):
+        raise HTTPException(status_code=404, detail="API route not found")
+        
+    # Check if a specific file exists in 'out' (e.g. favicon.ico, logo.png)
+    file_path = os.path.join("out", full_path)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+        
+    # Default: Serve index.html for any other route (Client-side routing)
+    if os.path.exists("out/index.html"):
+        return FileResponse("out/index.html")
+    
+    # DEBUG: List current directory to debug Railway deployment
+    current_dir = os.getcwd()
+    files = "not_read"
+    out_files = "not_read"
+    
+    try:
+        files = os.listdir(current_dir)
+        out_files = os.listdir("out") if os.path.exists("out") else "out_dir_not_found"
+    except Exception as e:
+        files = str(e)
+        out_files = "error_reading_out"
+        
+    return {
+        "message": "Frontend not built. Run 'npm run build' or check logs.",
+        "cwd": current_dir,
+        "files": str(files),
+        "out_status": str(out_files)
+    }
